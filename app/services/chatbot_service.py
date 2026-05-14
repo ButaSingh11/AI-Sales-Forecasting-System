@@ -189,6 +189,23 @@ def detect_query_intent(query: str) -> str:
 
     if any(k in q for k in ["anomaly", "anomalies", "spike", "drop", "unusual", "outlier", "outliers"]):
         return "anomaly"
+    if any(k in q for k in [
+        "recommendation",
+        "recommendations",
+        "recommend",
+        "business advice",
+        "business insight",
+        "business insights",
+        "action plan",
+        "next steps",
+        "what should i do",
+        "what to do",
+        "strategy",
+        "strategies",
+        "decision",
+        "decisions",
+    ]):
+        return "recommendations"
     if any(k in q for k in ["model", "algorithm", "mape", "rmse", "mae", "r-squared", "r squared", "r2", "accuracy", "confidence interval", "feature importance", "smart ensemble", "holt", "random forest", "linear trend", "moving average", "exponential smoothing", "seasonal naive"]):
         return "model_info"
     if (
@@ -1100,6 +1117,79 @@ def _build_data_info_answer(query: str, data: pd.DataFrame, monthly: pd.DataFram
     }
 
 
+def _build_recommendations_answer(data: pd.DataFrame, monthly: pd.DataFrame) -> Dict[str, object]:
+    total = float(data["Sales"].sum())
+    latest = monthly.iloc[-1]
+    best_idx = monthly["Sales"].idxmax()
+    worst_idx = monthly["Sales"].idxmin()
+    best_month = monthly.loc[best_idx]
+    worst_month = monthly.loc[worst_idx]
+    monthly_avg = float(monthly["Sales"].mean())
+
+    recent_window = monthly["Sales"].iloc[-min(3, len(monthly)):]
+    earlier_window = monthly["Sales"].iloc[:min(3, len(monthly))]
+    recent_avg = float(recent_window.mean())
+    earlier_avg = float(earlier_window.mean())
+    trend_pct = ((recent_avg - earlier_avg) / earlier_avg * 100) if earlier_avg else 0.0
+    trend_word = "growing" if trend_pct > 5 else ("declining" if trend_pct < -5 else "stable")
+
+    facts = [
+        f"Total revenue is {_format_inr(total)} across {len(monthly):,} monthly periods.",
+        f"Recent sales look {trend_word}: recent monthly average {_format_inr(recent_avg)} vs early-period average {_format_inr(earlier_avg)} ({trend_pct:+.1f}%).",
+        f"Best month was {best_month['Month'].strftime('%b %Y')} with {_format_inr(float(best_month['Sales']))}; weakest month was {worst_month['Month'].strftime('%b %Y')} with {_format_inr(float(worst_month['Sales']))}.",
+        f"Latest month is {latest['Month'].strftime('%b %Y')} with {_format_inr(float(latest['Sales']))}, compared with average monthly revenue of {_format_inr(monthly_avg)}.",
+    ]
+
+    recommendations = []
+
+    if "Category" in data.columns:
+        category_sales = data.groupby("Category")["Sales"].sum().sort_values(ascending=False)
+        top_category = category_sales.index[0]
+        category_share = float(category_sales.iloc[0] / total * 100) if total else 0.0
+        facts.append(f"Top category is {top_category} with {_format_inr(float(category_sales.iloc[0]))} ({category_share:.1f}% of revenue).")
+        recommendations.append(
+            f"Prioritize inventory, offers, and campaign budget for {top_category}, because it is the strongest revenue category."
+        )
+
+        if len(category_sales) > 1:
+            weak_category = category_sales.index[-1]
+            recommendations.append(
+                f"Review pricing, visibility, and demand issues for {weak_category}; decide whether to improve it or reduce focus."
+            )
+
+    if "Region" in data.columns:
+        region_sales = data.groupby("Region")["Sales"].sum().sort_values(ascending=False)
+        top_region = region_sales.index[0]
+        region_share = float(region_sales.iloc[0] / total * 100) if total else 0.0
+        facts.append(f"Top region is {top_region} with {_format_inr(float(region_sales.iloc[0]))} ({region_share:.1f}% of revenue).")
+        recommendations.append(
+            f"Use {top_region} as the benchmark region and compare its product mix, pricing, and campaigns with weaker regions."
+        )
+
+    if trend_pct > 5:
+        recommendations.append("Protect the current growth by planning stock ahead of demand and repeating the campaigns behind recent strong months.")
+    elif trend_pct < -5:
+        recommendations.append("Investigate the recent decline quickly: check stockouts, pricing changes, campaign gaps, and competitor activity.")
+    else:
+        recommendations.append("Since sales are stable, use targeted promotions or bundling to create growth instead of relying only on baseline demand.")
+
+    recommendations.append(
+        f"Study what worked in {best_month['Month'].strftime('%b %Y')} and what went wrong in {worst_month['Month'].strftime('%b %Y')} before setting the next sales plan."
+    )
+    recommendations.append("Use the Forecasting page to plan inventory and monthly revenue targets for the next 3-6 months.")
+
+    return {
+        "intent": "recommendations",
+        "answer": "Here are practical business recommendations based on the loaded sales data.",
+        "formatted_answer": format_smart_response(
+            "Business Recommendations",
+            "Focus on the strongest revenue drivers, investigate weak periods, and use the forecast for planning.",
+            facts,
+            "\n".join(f"- {item}" for item in recommendations),
+        ),
+    }
+
+
 def _build_model_info_answer(query: str, monthly: pd.DataFrame) -> Dict[str, object]:
     q = query.lower()
 
@@ -1232,6 +1322,9 @@ def answer_from_dataframe(query: str, df: pd.DataFrame) -> Optional[Dict[str, st
 
     if intent == "model_info":
         return _build_model_info_answer(query, monthly)
+
+    if intent == "recommendations":
+        return _build_recommendations_answer(data, monthly)
 
     if intent == "forecast":
         q = query.lower()

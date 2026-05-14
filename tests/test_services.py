@@ -338,6 +338,19 @@ def test_chatbot_gives_clear_general_answer_for_broad_questions():
     assert "**What to do next**" in result["formatted_answer"]
 
 
+def test_chatbot_gives_business_recommendations():
+    result = answer_from_dataframe(
+        "Give me business recommendations based on this sales data",
+        sample_category_monthly_data(),
+    )
+
+    assert result["intent"] == "recommendations"
+    assert "Business Recommendations" in result["formatted_answer"]
+    assert "Prioritize inventory" in result["formatted_answer"]
+    assert "Use the Forecasting page" in result["formatted_answer"]
+    assert "Overall Sales Summary" not in result["formatted_answer"]
+
+
 def test_hybrid_chatbot_without_gemini_still_answers_broad_data_question():
     result = build_hybrid_chat_response(
         "help me understand what is going on",
