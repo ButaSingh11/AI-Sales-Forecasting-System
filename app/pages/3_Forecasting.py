@@ -5,6 +5,12 @@ import plotly.graph_objects as go
 import plotly.express as px
 import warnings
 import textwrap
+import sys
+from pathlib import Path
+
+APP_DIR = Path(__file__).resolve().parents[1]
+if str(APP_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_DIR))
 from services.insight_service import detect_anomalies
 from services.forecasting_service import (
     compare_forecast_models,

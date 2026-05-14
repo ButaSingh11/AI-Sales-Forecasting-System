@@ -3,6 +3,12 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import warnings
+import sys
+from pathlib import Path
+
+APP_DIR = Path(__file__).resolve().parents[1]
+if str(APP_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_DIR))
 from services.forecasting_service import prepare_monthly_series, run_forecast, run_forecast_with_fallback
 from services.simulation_service import apply_levers as service_apply_levers
 from utils.app_helpers import format_inr, hex_to_rgba, load_sales_data, render_navigation_link

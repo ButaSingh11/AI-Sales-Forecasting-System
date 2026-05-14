@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
 import sys
-import os
 from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent))
 
+APP_DIR = Path(__file__).resolve().parent
+if str(APP_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_DIR))
 
 from services.insight_service import detect_anomalies
 from services.forecasting_service import (

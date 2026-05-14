@@ -3,6 +3,12 @@ import pandas as pd
 import html
 import re
 import plotly.graph_objects as go
+import sys
+from pathlib import Path
+
+APP_DIR = Path(__file__).resolve().parents[1]
+if str(APP_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_DIR))
 
 from services.chatbot_service import build_hybrid_chat_response
 from utils.app_helpers import load_sales_data
