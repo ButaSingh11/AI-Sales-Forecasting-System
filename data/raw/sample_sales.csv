@@ -1,0 +1,37 @@
+Date,Sales,Category,Region
+2022-01-01,420000,Electronics,North
+2022-02-01,438000,Apparel,West
+2022-03-01,452000,Home & Garden,South
+2022-04-01,471000,Electronics,East
+2022-05-01,489000,Sports,North
+2022-06-01,503000,Beauty,West
+2022-07-01,492000,Electronics,South
+2022-08-01,481000,Apparel,East
+2022-09-01,398000,Home & Garden,North
+2022-10-01,425000,Electronics,West
+2022-11-01,447000,Sports,South
+2022-12-01,512000,Beauty,East
+2023-01-01,458000,Electronics,North
+2023-02-01,474000,Apparel,West
+2023-03-01,489000,Home & Garden,South
+2023-04-01,516000,Electronics,East
+2023-05-01,548000,Sports,North
+2023-06-01,562000,Beauty,West
+2023-07-01,553000,Electronics,South
+2023-08-01,541000,Apparel,East
+2023-09-01,462000,Home & Garden,North
+2023-10-01,489000,Electronics,West
+2023-11-01,521000,Sports,South
+2023-12-01,598000,Beauty,East
+2024-01-01,535000,Electronics,North
+2024-02-01,552000,Apparel,West
+2024-03-01,571000,Home & Garden,South
+2024-04-01,608000,Electronics,East
+2024-05-01,642000,Sports,North
+2024-06-01,661000,Beauty,West
+2024-07-01,648000,Electronics,South
+2024-08-01,633000,Apparel,East
+2024-09-01,544000,Home & Garden,North
+2024-10-01,576000,Electronics,West
+2024-11-01,618000,Sports,South
+2024-12-01,705000,Beauty,East
