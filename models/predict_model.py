@@ -15,7 +15,10 @@ import sys
 import os
 import pandas as pd
 
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+APP_DIR = os.path.join(PROJECT_ROOT, "app")
+if APP_DIR not in sys.path:
+    sys.path.insert(0, APP_DIR)
 
 from services.model_service import load_model
 from services.forecasting_service import prepare_monthly_series

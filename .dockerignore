@@ -12,6 +12,7 @@ logs
 models/saved_models
 data/raw/*.csv
 data/raw/*.xlsx
+!data/raw/sample_sales.csv
 data/processed
 notebooks/.ipynb_checkpoints
 .env

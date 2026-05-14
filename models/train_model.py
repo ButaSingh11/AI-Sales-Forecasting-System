@@ -14,8 +14,11 @@ import os
 import shutil
 import pandas as pd
 
-# Allow running from project root
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+# Allow running from project root after services moved under app/
+PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+APP_DIR = os.path.join(PROJECT_ROOT, "app")
+if APP_DIR not in sys.path:
+    sys.path.insert(0, APP_DIR)
 
 from services.forecasting_service import (
     prepare_monthly_series,

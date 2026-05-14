@@ -21,22 +21,23 @@ venv/
 env/
 ENV/
 .env
-.venv
+.venv/
 
-# Secrets & API keys
+# Secrets and API keys
 .env
 secrets.toml
 .streamlit/secrets.toml
 **/.streamlit/secrets.toml
 
-# Data files (raw uploads — may contain sensitive info)
+# Data files; keep only the public sample dataset
 data/raw/*.csv
 data/raw/*.xlsx
 !data/raw/sample_sales.csv
 data/processed/
 
-# Saved models (large binary files)
+# Saved models
 models/saved_models/*.pkl
+models/saved_models/*.json
 
 # Database
 database/*.db
@@ -45,7 +46,7 @@ database/*.db
 logs/
 *.log
 
-# IDE
+# IDE and OS files
 .vscode/
 .idea/
 *.swp
@@ -61,8 +62,3 @@ notebooks/.ipynb_checkpoints/
 .pytest_cache/
 .coverage
 htmlcov/
-
-# Secrets
-.streamlit/secrets.toml
-secrets.toml
-.env

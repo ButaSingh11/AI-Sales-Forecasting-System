@@ -59,7 +59,7 @@ On the built-in sample dataset, the current best result is:
 ## Project Structure
 
 ```text
-AI-3/
+AI-Sales-Forecasting-System/
 |-- app/
 |   |-- app.py
 |   |-- pages/
@@ -95,8 +95,8 @@ AI-3/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/ai-sales-forecasting.git
-cd ai-sales-forecasting
+git clone https://github.com/ButaSingh11/AI-Sales-Forecasting-System.git
+cd AI-Sales-Forecasting-System
 ```
 
 ### 2. Create a virtual environment

@@ -2,6 +2,7 @@ import json
 import os
 import pickle
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
@@ -25,7 +26,8 @@ class ModelComparisonResult:
 
 
 def _saved_models_dir() -> str:
-    return os.path.join(os.path.dirname(os.path.dirname(__file__)), "models", "saved_models")
+    project_root = Path(__file__).resolve().parents[2]
+    return str(project_root / "models" / "saved_models")
 
 
 def save_model(model_key: str,
