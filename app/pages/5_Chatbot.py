@@ -2,6 +2,7 @@
 import pandas as pd
 import html
 import re
+import os
 import plotly.graph_objects as go
 import sys
 from pathlib import Path
@@ -15,6 +16,15 @@ from utils.app_helpers import load_sales_data
 from utils.ui_theme import apply_theme, render_sidebar_status
 
 CHAT_RESPONSE_VERSION = 5
+
+
+def get_configured_gemini_key() -> str:
+    """Read Gemini key from Streamlit secrets or environment variables."""
+    try:
+        secret_key = st.secrets.get("GEMINI_API_KEY", "")
+    except Exception:
+        secret_key = ""
+    return secret_key or os.getenv("GEMINI_API_KEY", "")
 
 st.set_page_config(page_title="Sales AI Chatbot", page_icon="🤖", layout="wide")
 
@@ -471,8 +481,12 @@ df, is_sample = load_sales_data()
 if "chat_messages" not in st.session_state:
     st.session_state.chat_messages = []
 
+configured_gemini_key = get_configured_gemini_key()
+
 if "gemini_api_key" not in st.session_state:
-    st.session_state.gemini_api_key = ""
+    st.session_state.gemini_api_key = configured_gemini_key
+elif configured_gemini_key:
+    st.session_state.gemini_api_key = configured_gemini_key
 
 if st.session_state.get("chat_response_version") != CHAT_RESPONSE_VERSION:
     st.session_state.chat_messages = []
@@ -537,12 +551,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.expander("🔑 Gemini API setup", expanded=False):
-    st.session_state.gemini_api_key = st.text_input(
-        "Gemini API Key",
-        value=st.session_state.gemini_api_key,
-        type="password",
-        placeholder="Paste your Gemini API key here",
-    )
+    if configured_gemini_key:
+        st.success("Gemini API key is configured from Streamlit Secrets.")
+    else:
+        st.session_state.gemini_api_key = st.text_input(
+            "Gemini API Key",
+            value=st.session_state.gemini_api_key,
+            type="password",
+            placeholder="Paste your Gemini API key here",
+        )
 
     st.markdown("""
     <div class="quick-note">
