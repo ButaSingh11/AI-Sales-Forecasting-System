@@ -68,24 +68,25 @@ AI-3/
 |   |   |-- 3_Forecasting.py
 |   |   |-- 4_Scenario_Simulation.py
 |   |   `-- 5_Chatbot.py
-|-- services/
-|   |-- chatbot_service.py
-|   |-- evaluation_service.py
-|   |-- forecasting_service.py
-|   |-- insight_service.py
-|   |-- model_service.py
-|   |-- preprocessing_service.py
-|   `-- simulation_service.py
+|   |-- services/
+|   |   |-- chatbot_service.py
+|   |   |-- evaluation_service.py
+|   |   |-- forecasting_service.py
+|   |   |-- insight_service.py
+|   |   |-- model_service.py
+|   |   |-- preprocessing_service.py
+|   |   `-- simulation_service.py
+|   `-- utils/
 |-- data/
 |   `-- raw/
 |       `-- sample_sales.csv
 |-- notebooks/
 |   `-- model_experiments.ipynb
 |-- tests/
-|-- utils/
 |-- requirements.txt
 |-- Dockerfile
 |-- .gitignore
+|-- pytest.ini
 `-- README.md
 ```
 
