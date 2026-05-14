@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+*.manifest
+*.spec
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env
+.venv
+
+# Secrets & API keys
+.env
+secrets.toml
+.streamlit/secrets.toml
+**/.streamlit/secrets.toml
+
+# Data files (raw uploads — may contain sensitive info)
+data/raw/*.csv
+data/raw/*.xlsx
+!data/raw/sample_sales.csv
+data/processed/
+
+# Saved models (large binary files)
+models/saved_models/*.pkl
+
+# Database
+database/*.db
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secrets
+.streamlit/secrets.toml
+secrets.toml
+.env
