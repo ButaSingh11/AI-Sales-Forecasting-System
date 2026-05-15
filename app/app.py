@@ -3,12 +3,12 @@ import pandas as pd
 import sys
 from pathlib import Path
 
-APP_DIR = Path(__file__).resolve().parent
-if str(APP_DIR) not in sys.path:
-    sys.path.insert(0, str(APP_DIR))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from services.insight_service import detect_anomalies
-from services.forecasting_service import (
+from app.services.insight_service import detect_anomalies
+from app.services.forecasting_service import (
     prepare_monthly_series,
     moving_average,
     linear_trend,
@@ -17,9 +17,9 @@ from services.forecasting_service import (
     holts_double,
     smart_ensemble_forecast,
 )
-from services.evaluation_service import compare_all_models, get_best_model, forecast_confidence_score
-from utils.app_helpers import format_inr, load_sales_data
-from utils.ui_theme import apply_theme, render_sidebar_status
+from app.services.evaluation_service import compare_all_models, get_best_model, forecast_confidence_score
+from app.utils.app_helpers import format_inr, load_sales_data
+from app.utils.ui_theme import apply_theme, render_sidebar_status
 
 st.set_page_config(
     page_title="AI Sales Forecasting System",

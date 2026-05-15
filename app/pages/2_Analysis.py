@@ -6,13 +6,13 @@ import plotly.graph_objects as go
 import sys
 from pathlib import Path
 
-APP_DIR = Path(__file__).resolve().parents[1]
-if str(APP_DIR) not in sys.path:
-    sys.path.insert(0, str(APP_DIR))
-from utils.app_helpers import format_inr, load_sales_data
-from utils.ui_theme import apply_theme, render_sidebar_status
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+from app.utils.app_helpers import format_inr, load_sales_data
+from app.utils.ui_theme import apply_theme, render_sidebar_status
 
-from services.insight_service import (
+from app.services.insight_service import (
     generate_insights,
     generate_alerts,
     detect_anomalies,

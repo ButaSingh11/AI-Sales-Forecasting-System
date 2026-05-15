@@ -8,11 +8,11 @@ import textwrap
 import sys
 from pathlib import Path
 
-APP_DIR = Path(__file__).resolve().parents[1]
-if str(APP_DIR) not in sys.path:
-    sys.path.insert(0, str(APP_DIR))
-from services.insight_service import detect_anomalies
-from services.forecasting_service import (
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+from app.services.insight_service import detect_anomalies
+from app.services.forecasting_service import (
     compare_forecast_models,
     get_model_label,
     get_random_forest_feature_importance as service_random_forest_feature_importance,
@@ -21,9 +21,9 @@ from services.forecasting_service import (
     run_forecast,
     run_forecast_with_fallback,
 )
-from services.evaluation_service import evaluate_model
-from utils.app_helpers import format_inr, hex_to_rgba, load_sales_data, render_navigation_link
-from utils.ui_theme import apply_theme, render_sidebar_status
+from app.services.evaluation_service import evaluate_model
+from app.utils.app_helpers import format_inr, hex_to_rgba, load_sales_data, render_navigation_link
+from app.utils.ui_theme import apply_theme, render_sidebar_status
 warnings.filterwarnings("ignore")
 
 # ─────────────────────────────────────────────
