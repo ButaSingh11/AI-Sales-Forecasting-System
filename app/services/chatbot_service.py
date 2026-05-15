@@ -1789,8 +1789,10 @@ def build_hybrid_chat_response(query: str,
         "- Most data, model, and project questions can now be answered directly without Gemini."
     )
 
-    # Direct dataset questions stay local so answers remain short and question-specific.
-    if direct is not None:
+    # Direct dataset questions stay local when Gemini is not configured. When a
+    # key is available, Gemini rewrites the computed answer without changing the
+    # underlying numbers or conclusions.
+    if direct is not None and not api_key:
         return {
             "intent": direct["intent"],
             "mode": "direct_data",
@@ -1841,7 +1843,7 @@ def build_hybrid_chat_response(query: str,
             max_output_tokens=max_output_tokens
         )
 
-        if final_answer.startswith("❌") or final_answer.startswith("⚠️"):
+        if _is_gemini_failure(final_answer):
             return {
                 "intent": direct["intent"],
                 "mode": "direct_data",

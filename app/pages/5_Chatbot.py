@@ -24,7 +24,15 @@ def get_configured_gemini_key() -> str:
         secret_key = st.secrets.get("GEMINI_API_KEY", "")
     except Exception:
         secret_key = ""
-    return secret_key or os.getenv("GEMINI_API_KEY", "")
+    key = secret_key or os.getenv("GEMINI_API_KEY", "")
+    key = str(key).strip()
+    placeholder_values = {
+        "",
+        "your_api_key_here",
+        "your_gemini_api_key_here",
+        "paste_your_gemini_api_key_here",
+    }
+    return "" if key.lower() in placeholder_values else key
 
 st.set_page_config(page_title="Sales AI Chatbot", page_icon="🤖", layout="wide")
 
@@ -554,6 +562,7 @@ with st.expander("🔑 Gemini API setup", expanded=False):
     if configured_gemini_key:
         st.success("Gemini API key is configured from Streamlit Secrets.")
     else:
+        st.info("No valid Gemini API key was found. Replace the placeholder in app/.streamlit/secrets.toml or paste a key below.")
         st.session_state.gemini_api_key = st.text_input(
             "Gemini API Key",
             value=st.session_state.gemini_api_key,
