@@ -278,6 +278,7 @@ render_sidebar_status()
 # ─────────────────────────────────────────────
 # HELPERS — MODELS
 # ─────────────────────────────────────────────
+@st.cache_data(show_spinner=False)
 def prepare_series(df: pd.DataFrame) -> pd.DataFrame:
     return prepare_monthly_series(df)
 
@@ -299,6 +300,7 @@ def normalize_metric_keys(metrics):
     return metrics
 
 
+@st.cache_data(show_spinner=False)
 def get_in_sample_fit(series, model_key, model_kwargs=None):
     """Compute in-sample fitted values to get accuracy metrics."""
     model_kwargs = model_kwargs or {}
@@ -308,6 +310,24 @@ def get_in_sample_fit(series, model_key, model_kwargs=None):
         model_kwargs,
     )
     return normalize_metric_keys(metrics) if metrics else None
+
+
+@st.cache_data(show_spinner=False)
+def build_forecast_df(series: pd.DataFrame,
+                      model_key: str,
+                      periods: int,
+                      model_kwargs: dict) -> pd.DataFrame:
+    return run_forecast(series, model_key, periods, **(model_kwargs or {}))
+
+
+@st.cache_data(show_spinner=False)
+def get_monthly_anomalies(series: pd.DataFrame) -> pd.DataFrame:
+    return detect_anomalies(
+        series.copy(),
+        method="rolling_deviation",
+        threshold=2.5,
+        rolling_window=6,
+    )
 
 
 def get_first_existing_column(df: pd.DataFrame, candidates: tuple[str, ...]) -> str | None:
@@ -640,6 +660,7 @@ CHART_BG = dict(
 
 
 raw_df, is_sample = load_sales_data(include_segments=False, copy_uploaded=False)
+raw_df = raw_df.copy()
 raw_df["Date"] = pd.to_datetime(raw_df["Date"])
 monthly = prepare_series(raw_df)
 
@@ -916,7 +937,7 @@ elif selected_model == "holts":
     model_kwargs = {"alpha": alpha_h, "beta": beta_h}
 
 try:
-    forecast_df = run_forecast(monthly, selected_model, forecast_periods, **model_kwargs)
+    forecast_df = build_forecast_df(monthly, selected_model, forecast_periods, model_kwargs)
 except Exception as exc:
     try:
         forecast_df, fallback_model = run_forecast_with_fallback(
@@ -967,12 +988,7 @@ peak_month  = forecast_df.loc[forecast_df["Forecast"].idxmax(), "Date"].strftime
 last_actual = monthly["Sales"].iloc[-1]
 next_pred   = forecast_df["Forecast"].iloc[0]
 mom_change  = (next_pred - last_actual) / last_actual * 100
-anomalies_monthly = detect_anomalies(
-    monthly.copy(),
-    method="rolling_deviation",
-    threshold=2.5,
-    rolling_window=6,
-)
+anomalies_monthly = get_monthly_anomalies(monthly)
 forecast_anomaly_count = len(anomalies_monthly)
 forecast_confidence_info = get_confidence_info(metrics_raw, monthly, forecast_anomaly_count)
 forecast_volatility_info = get_volatility_info(monthly)

@@ -3,14 +3,14 @@ import requests
 import re
 from typing import List, Dict, Optional, Tuple
 
-from services.insight_service import detect_anomalies
-from services.forecasting_service import (
+from app.services.insight_service import detect_anomalies
+from app.services.forecasting_service import (
     compare_forecast_models,
     forecast_with_best_model,
     get_model_label,
 )
-from services.evaluation_service import forecast_confidence_score
-from utils.app_helpers import format_inr, normalize_text_columns, repair_text_encoding
+from app.services.evaluation_service import forecast_confidence_score
+from app.utils.app_helpers import format_inr, normalize_text_columns, repair_text_encoding
 
 
 def build_data_summary(df: pd.DataFrame) -> str:

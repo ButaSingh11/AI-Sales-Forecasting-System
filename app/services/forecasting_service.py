@@ -447,11 +447,11 @@ def prepare_supervised_series(series: pd.DataFrame) -> pd.DataFrame:
     return feature_df
 
 
-def _build_future_feature_row(history_df: pd.DataFrame, future_date: pd.Timestamp) -> pd.DataFrame:
+def _build_future_feature_row_from_sales(sales_history: list[float],
+                                         future_date: pd.Timestamp) -> pd.DataFrame:
     """
-    Build the next feature row from the rolling history for recursive forecasting.
+    Build the next feature row from rolling sales values for recursive forecasting.
     """
-    sales_history = history_df["Sales"].tolist()
     if len(sales_history) < 3:
         raise ValueError("Random Forest forecast requires at least 6 monthly observations to build stable lag features.")
 
@@ -466,6 +466,13 @@ def _build_future_feature_row(history_df: pd.DataFrame, future_date: pd.Timestam
         "quarter": future_date.quarter,
         "year": future_date.year,
     }])
+
+
+def _build_future_feature_row(history_df: pd.DataFrame, future_date: pd.Timestamp) -> pd.DataFrame:
+    """
+    Build the next feature row from the rolling history for recursive forecasting.
+    """
+    return _build_future_feature_row_from_sales(history_df["Sales"].tolist(), future_date)
 
 
 def random_forest_forecast(series: pd.DataFrame,
@@ -522,27 +529,20 @@ def random_forest_forecast(series: pd.DataFrame,
     train_pred = model.predict(X_train)
     residual_std = float(np.std(y_train - train_pred))
 
-    history_df = series.copy()
+    sales_history = series["Sales"].astype(float).tolist()
     future_dates = pd.date_range(
-        history_df["Date"].iloc[-1] + pd.DateOffset(months=1),
+        series["Date"].iloc[-1] + pd.DateOffset(months=1),
         periods=periods,
         freq="MS",
     )
 
     forecasts = []
     for future_date in future_dates:
-        future_X = _build_future_feature_row(history_df, future_date)
+        future_X = _build_future_feature_row_from_sales(sales_history, future_date)
         pred = float(model.predict(future_X)[0])
         pred = max(pred, 0.0)
         forecasts.append(pred)
-
-        history_df = pd.concat(
-            [
-                history_df,
-                pd.DataFrame({"Date": [future_date], "Sales": [pred]}),
-            ],
-            ignore_index=True,
-        )
+        sales_history.append(pred)
 
     forecast = np.array(forecasts)
     forecast = _ensure_forecast_has_movement(
@@ -618,7 +618,7 @@ def run_forecast_with_fallback(series: pd.DataFrame,
 def compare_forecast_models(series: pd.DataFrame,
                             include_random_forest: bool = True) -> pd.DataFrame:
     """Compare supported forecast models on the supplied monthly series."""
-    from services.evaluation_service import compare_all_models
+    from app.services.evaluation_service import compare_all_models
 
     registry = get_default_model_registry(
         series=series,
@@ -633,7 +633,7 @@ def rolling_backtest_forecast_models(series: pd.DataFrame,
                                      max_splits: int = 8,
                                      include_random_forest: bool = True) -> pd.DataFrame:
     """Run expanding-window backtests for all supported models."""
-    from services.evaluation_service import rolling_backtest_all_models
+    from app.services.evaluation_service import rolling_backtest_all_models
 
     registry = get_default_model_registry(
         series=series,

@@ -1,14 +1,14 @@
 import numpy as np
 import pandas as pd
 
-from services.chatbot_service import answer_from_dataframe, build_hybrid_chat_response, detect_query_intent
-from services.evaluation_service import (
+from app.services.chatbot_service import answer_from_dataframe, build_hybrid_chat_response, detect_query_intent
+from app.services.evaluation_service import (
     compare_all_models,
     forecast_confidence_score,
     get_best_model,
     rolling_backtest_all_models,
 )
-from services.forecasting_service import (
+from app.services.forecasting_service import (
     MODEL_REGISTRY,
     exp_smoothing,
     holts_double,
@@ -20,9 +20,9 @@ from services.forecasting_service import (
     seasonal_trend,
     smart_ensemble_forecast,
 )
-from services.insight_service import detect_anomalies
-from services.model_service import calculate_regression_metrics, safe_mape
-from services.preprocessing_service import clean_dataframe, clean_numeric_strings
+from app.services.insight_service import detect_anomalies
+from app.services.model_service import calculate_regression_metrics, safe_mape
+from app.services.preprocessing_service import clean_dataframe, clean_numeric_strings
 
 
 def sample_daily_data(periods: int = 365) -> pd.DataFrame:

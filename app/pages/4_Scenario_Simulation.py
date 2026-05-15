@@ -257,12 +257,21 @@ render_sidebar_status()
 # ─────────────────────────────────────────────
 # HELPERS
 # ─────────────────────────────────────────────
+@st.cache_data(show_spinner=False)
 def prepare_series(df):
     return prepare_monthly_series(df)
 
 
 def holts_forecast(series, periods, alpha=0.3, beta=0.1):
     return run_forecast(series, "holts", periods, alpha=alpha, beta=beta)
+
+
+@st.cache_data(show_spinner=False)
+def build_base_forecast(series: pd.DataFrame,
+                        model_key: str,
+                        periods: int,
+                        model_kwargs: dict) -> pd.DataFrame:
+    return run_forecast(series, model_key, periods, **(model_kwargs or {}))
 
 
 def apply_levers(forecast_df, growth_pct, seasonality_boost, discount_impact,
@@ -298,6 +307,7 @@ CHART_BG = dict(
 
 
 raw_df, is_sample = load_sales_data(include_segments=False, copy_uploaded=False)
+raw_df = raw_df.copy()
 raw_df["Date"] = pd.to_datetime(raw_df["Date"])
 monthly = prepare_series(raw_df)
 
@@ -390,7 +400,7 @@ model_options = {
 }
 base_model_key, base_model_kwargs = model_options[base_model]
 try:
-    base_forecast = run_forecast(monthly, base_model_key, sim_periods, **base_model_kwargs)
+    base_forecast = build_base_forecast(monthly, base_model_key, sim_periods, base_model_kwargs)
 except Exception as exc:
     try:
         base_forecast, fallback_model_key = run_forecast_with_fallback(

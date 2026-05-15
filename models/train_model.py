@@ -14,13 +14,11 @@ import os
 import shutil
 import pandas as pd
 
-# Allow running from project root after services moved under app/
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-APP_DIR = os.path.join(PROJECT_ROOT, "app")
-if APP_DIR not in sys.path:
-    sys.path.insert(0, APP_DIR)
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
-from services.forecasting_service import (
+from app.services.forecasting_service import (
     prepare_monthly_series,
     moving_average,
     linear_trend,
@@ -29,8 +27,8 @@ from services.forecasting_service import (
     holts_double,
     random_forest_forecast,
 )
-from services.evaluation_service import evaluate_model
-from services.model_service import save_model
+from app.services.evaluation_service import evaluate_model
+from app.services.model_service import save_model
 
 
 def train_all(data_path: str, forecast_periods: int = 12,
