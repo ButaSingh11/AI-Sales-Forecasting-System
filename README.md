@@ -2,6 +2,8 @@
 
 A Streamlit-based machine learning application that analyzes historical sales data, forecasts future sales, simulates business scenarios, and provides data-backed chatbot insights.
 
+**Live demo:** https://ai-sales-forecasting-system-ugobcnnv55d37eskcmq7ps.streamlit.app
+
 ## Overview
 
 This project helps convert raw sales datasets into useful business insights. It includes data cleaning, exploratory analysis, forecasting model comparison, scenario simulation, and an AI-style chatbot that answers questions based on the uploaded dataset.
@@ -43,6 +45,36 @@ On the built-in sample dataset, the current best result is:
 - Best model: Exponential Smoothing
 - MAPE: 7.29%
 - Approximate accuracy: 92.71%
+
+## How to Use the App
+
+1. Open the live app:
+
+```text
+https://ai-sales-forecasting-system-ugobcnnv55d37eskcmq7ps.streamlit.app
+```
+
+2. Start with the built-in sample data or upload your own sales file from the **Data Upload** page.
+3. Review cleaning results and validation feedback.
+4. Explore trend, category, region, anomaly, and correlation insights in the **Analysis** page.
+5. Compare forecasting models and generate future predictions in the **Forecasting** page.
+6. Test business assumptions in **Scenario Simulation**.
+7. Ask dataset-backed questions in the **Chatbot** page.
+
+### Sample CSV Format
+
+The app works best with sales data that includes:
+
+| Column | Required | Example | Notes |
+| --- | --- | --- | --- |
+| Date | Yes | 2024-01-15 | Daily, weekly, or monthly dates are supported |
+| Sales | Yes | 12500 | Revenue or sales amount |
+| Category | Optional | Electronics | Used for category-level insights |
+| Region | Optional | North | Used for regional analysis |
+| Orders | Optional | 145 | Used for extra operational metrics |
+| Returns | Optional | 8 | Used for return-rate insights |
+
+CSV and Excel uploads are supported. If no file is uploaded, the app uses a built-in sample dataset.
 
 ## Tech Stack
 
@@ -156,7 +188,13 @@ Optional Gemini-based explanations can be enabled by adding your API key in Stre
 
 ## Deployment
 
-This project can be deployed on Streamlit Community Cloud:
+This project is deployed on Streamlit Community Cloud:
+
+```text
+https://ai-sales-forecasting-system-ugobcnnv55d37eskcmq7ps.streamlit.app
+```
+
+To deploy your own copy:
 
 1. Push the project to GitHub.
 2. Create a new Streamlit Community Cloud app.
